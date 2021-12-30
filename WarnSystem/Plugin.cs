@@ -89,7 +89,6 @@ namespace WarnSystem
                 // do the warning message for eu server
                 ev.Player.OpenReportWindow(Translation.ActiveTranslation.WarningMessage);
             }
-            
         }
     }
 }

@@ -14,7 +14,7 @@ namespace WarnSystem.Commands
         Permission = "ws.warn",
         Platforms = new[] { Platform.RemoteAdmin, Platform.ServerConsole },
         Usage = "Type warn, playerid and the reason",
-        Arguments = new[] {"Player", "WarnID" }
+        Arguments = new[] { "Player", "WarnID" }
         )]
     public class RemoveWarn : ISynapseCommand
     {

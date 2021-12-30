@@ -47,8 +47,9 @@ namespace WarnSystem.Commands
                 ExpiratonDate = System.DateTime.Now,
                 Reason = reason,
                 WarnDate = System.DateTime.Now,
-                Id = dbo.Warns.Count()
-
+                Id = dbo.Warns.Count(),
+                StaffNickName = context.Player.NickName,
+                StaffUserId = context.Player.UserId
             }) ;
 
             Plugin.WarnRepository.UpdateOrAdd(dbo);
