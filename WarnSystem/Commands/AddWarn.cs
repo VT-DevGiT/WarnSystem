@@ -4,54 +4,58 @@ using Synapse;
 using System.Linq;
 using WarnSystem.DataBase;
 
-
 namespace WarnSystem.Commands
 {
     [CommandInformation(
         Name = "addwarn",
-        Aliases = new string[] { },
+        Aliases = new string[] { "warn" },
         Description = "add a warn to a player",
         Permission = "ws.warn",
         Platforms = new[] { Platform.RemoteAdmin, Platform.ServerConsole },
-        Usage = "Type warn, playerid and the reason"
+        Usage = "add a warn on a player for a specific reason",
+        Arguments = new [] { "Player", "Reason" }
         )]
     public class AddWarn : ISynapseCommand
     {
         public CommandResult Execute(CommandContext context)
         {
             var Result = new CommandResult();
-         
-            var id = context.Arguments.Array[1];
-            var reason = context.Arguments.Array[2];
+            var player = Server.Get.GetPlayer(context.Arguments.Array[1]);
+            string reason = "";
+            WarnDbo dbo = null;
 
-            Logger.Get.Info(id);
+            for (int i = 2; i >= context.Arguments.Array.Length; i++)
+                reason += $" {context.Arguments.Array[i]}";
 
 
-            var P = Server.Get.Players.Where(x => x.PlayerId.Equals(id));
-            var player = P.First();
-            if (Plugin.DataBaseEnabled)
-            {
-                var dbo = Plugin.WarnRepo.GetByPlayerId(player.UserId);
-
-                dbo.Data.Add(dbo.Data.Count()+1,new Warn()
-                {
-                    ExpiratonDate = System.DateTime.Now,
-                    Reason = reason,
-                    WarnDate = System.DateTime.Now,
-                    Id = dbo.Data.Count()
-
-                }) ;
-
-                WarnPlayerRepo.Update(dbo);
-
-                Result.Message = "Warn Added";
-                Result.State = CommandResultState.Ok;
-            }
-            else
+            if (!Plugin.DataBaseEnabled)
             {
                 Result.Message = "Database not activated. Contact your host";
                 Result.State = CommandResultState.Error;
+                return Result;
             }
+
+            if (player != null && Plugin.WarnRepository.TryGetByUserId(player.UserId, out dbo))
+            {
+                Result.Message = "Invalid player !";
+                Result.State = CommandResultState.Error;
+                return Result;
+            }
+
+            dbo.Warns.Add(new Warn()
+            {
+                ExpiratonDate = System.DateTime.Now,
+                Reason = reason,
+                WarnDate = System.DateTime.Now,
+                Id = dbo.Warns.Count()
+
+            }) ;
+
+            Plugin.WarnRepository.UpdateOrAdd(dbo);
+
+            Result.Message = $"The player {player} get this warn";
+            Result.State = CommandResultState.Ok;
+
             return Result;
         }
     }

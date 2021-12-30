@@ -1,11 +1,20 @@
 ﻿using Synapse;
-using Synapse.Api.Plugin;
 using Synapse.Api;
-using Synapse.Database;
 using Synapse.Api.Events.SynapseEventArguments;
-using System;
-using WarnSystem.DataBase;
+using Synapse.Api.Plugin;
+using Synapse.Database;
 using Synapse.Translation;
+using WarnSystem.DataBase;
+
+/*                      /!\ Warning /!\ 
+ * The synapse dll is not the synapse from the nugets
+ * but the synapse form tempLib because it is not the right vection !
+ * [Fr]
+ * La dll synapse n'est pas à la bonne verstion donc j'ai pris
+ * un dll de tempLib qui est a suprimer lorsque les nugets seront a jours !
+ * 
+ * @Antoniofo
+ */                         
 
 namespace WarnSystem
 {
@@ -21,60 +30,66 @@ namespace WarnSystem
         )]
     public class Plugin : AbstractPlugin
     {
-        public static WarnPlayerRepo WarnRepo;
+        [API]
+        public static WarnPlayerRepository WarnRepository { get; private set; }
 
         [SynapseTranslation]
-        public static new SynapseTranslation<Translate> Translation {get;set;}
+        public static new SynapseTranslation<PluginTranslate> Translation { get; set;}
+
+        [Config(section = "WarnSystem")]
+        public static PluginConfig Config { get; set; }
 
         public static bool DataBaseEnabled { get; private set; }
 
         public override void Load()
         {
             DatabaseManager.CheckEnabledOrThrow();
-            base.Load();
-            WarnRepo = new WarnPlayerRepo();
-            Server.Get.Events.Player.PlayerJoinEvent += OnJoin;
+            
 
-            Translation.AddTranslation(new Translate());
-            Translation.AddTranslation(new Translate
+            WarnRepository = new WarnPlayerRepository();
+            DataBaseEnabled = true;
+            Server.Get.Events.Player.PlayerJoinEvent += OnJoin;
+            
+            InitTranslation();
+
+            base.Load();
+        }
+
+        private void InitTranslation()
+        {
+            Translation.AddTranslation(new PluginTranslate());
+            Translation.AddTranslation(new PluginTranslate
             {
                 WarningMessage = "<color=red>Attention certaine de vos données seront stocker pour la sécuriter du server.\n Contactez le staff du server pour plus d'informations</color>"
             }, "FRENCH");
-            Translation.AddTranslation(new Translate
+            Translation.AddTranslation(new PluginTranslate
             {
                 WarningMessage = "<color=red>Bitte beachten Sie, dass einige Ihrer Daten gespeichert werden, um sie vom Server abzusichern.\n Kontaktieren Sie das Serverpersonal für weitere Informationen</color>"
             }, "GERMAN");
-
-            DataBaseEnabled = true;
-
         }
 
         private void OnJoin(PlayerJoinEventArgs ev)
         {
-            if (WarnRepo.ExistPlayerID(ev.Player.UserId))
+            if (WarnRepository.TryGetByUserId(ev.Player.UserId, out WarnDbo dbo))
             {
-                Logger.Get.Info("not Already connected once");
-                ev.Player.OpenReportWindow(Translation.ActiveTranslation.WarningMessage);
-                var dbo = new Warndbo()
+                if (dbo.NickName != ev.Player.NickName)
                 {
-                    UserID = ev.Player.UserId,
-                    Data = new System.Collections.Generic.Dictionary<int, Warn>(),
-                    Name = ev.Player.NickName
-                };
-                WarnPlayerRepo.AddDbo(dbo);
-
+                    dbo.NickName = ev.Player.NickName;
+                    WarnRepository.UpdateOrAdd(dbo);
+                }
             }
             else
             {
-                Logger.Get.Info("Already connected once");
+                dbo = new WarnDbo(ev.Player.UserId)
+                {
+                    NickName = ev.Player.NickName
+                };
+                WarnRepository.UpdateOrAdd(dbo);
+
+                // do the warning message for eu server
+                ev.Player.OpenReportWindow(Translation.ActiveTranslation.WarningMessage);
             }
             
         }
-
-        public override void ReloadConfigs()
-        {
-            base.ReloadConfigs();
-        }
-
     }
 }
