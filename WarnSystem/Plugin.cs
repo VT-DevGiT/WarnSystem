@@ -4,6 +4,7 @@ using Synapse.Api.Events.SynapseEventArguments;
 using Synapse.Api.Plugin;
 using Synapse.Database;
 using Synapse.Translation;
+using System.Threading.Tasks;
 using WarnSystem.DataBase;
 
 /*                      /!\ Warning /!\ 
@@ -82,7 +83,7 @@ namespace WarnSystem
             {
                 dbo = new WarnDbo(ev.Player.UserId)
                 {
-                    NickName = ev.Player.NickName
+                    NickName = ev.Nickname,
                 };
                 WarnRepository.UpdateOrAdd(dbo);
 

@@ -11,20 +11,48 @@ namespace WarnSystem.DataBase
     [API]
     public class WarnPlayerRepository : Repository<WarnDbo>
     {
+        #region Method - Async
         private static readonly object _dbLock = new object();
 
-        public WarnDbo GetByUserId(string id) => Get(LiteDB.Query.EQ(nameof(WarnDbo.GameIdentifier), id));
-        
-        public WarnDbo GetByNickName(string name) => Get(LiteDB.Query.EQ(nameof(WarnDbo.NickName), name));
 
-
-        public bool ExisteByUserId(string id) => Exists(LiteDB.Query.EQ(nameof(WarnDbo.GameIdentifier), id));
-
-        public bool ExisteByNickName(string name) => Exists(LiteDB.Query.EQ(nameof(WarnDbo.NickName), name));
-
-
-        public bool TryGetByUserId(string id, out WarnDbo warnDbo)
+        public WarnDbo GetByUserId(string id)
         {
+            return ExecuteAsync(() => Get(LiteDB.Query.EQ(nameof(WarnDbo.GameIdentifier), id)));
+        }
+        public WarnDbo GetByNickName(string name)
+        {
+            return ExecuteAsync(() => Get(LiteDB.Query.EQ(nameof(WarnDbo.NickName), name)));
+        }
+
+
+        public bool ExisteByUserId(string id)
+        {
+            return ExecuteAsync(() => Exists(LiteDB.Query.EQ(nameof(WarnDbo.GameIdentifier), id)));
+        }
+
+        public bool ExisteByNickName(string name)
+        {
+            return Exists(LiteDB.Query.EQ(nameof(WarnDbo.NickName), name));
+        }
+
+
+        private static T ExecuteAsync<T>(Func<T> funcFill)
+        {
+            Task<T> task = Task.Run(() =>
+            {
+                lock (_dbLock)
+                {
+                    T result = funcFill.Invoke();
+                    return result;
+                }
+            });
+            return task.Result;
+        }
+        #endregion
+
+        #region Methods
+        public bool TryGetByUserId(string id, out WarnDbo warnDbo)
+        { 
             if (ExisteByUserId(id))
             {
                 warnDbo = GetByUserId(id);
@@ -53,17 +81,11 @@ namespace WarnSystem.DataBase
 
         public void UpdateOrAdd(WarnDbo item)
         {
-            new Task(() =>
-            {
-                lock (_dbLock)
-                {
-                    if (ExisteByUserId(item.GameIdentifier))
-                        Save(item);
-                    else
-                        Insert(item);
-                }
-            }
-            ).Start();
+            if (ExisteByUserId(item.GameIdentifier))
+                Save(item);
+            else
+                Insert(item);
         }
+        #endregion
     }
 }
