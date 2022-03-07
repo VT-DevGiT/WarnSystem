@@ -8,8 +8,8 @@ namespace WarnSystem.Warn
 {
   [CommandInformation(
     Name = "warn",
-    Aliases = new string[] { "wrn", "ws" },
-    Arguments = new string[] { "see/add/remove", "player SteamId", "aditional parameter" },
+    Aliases = new string[] { "wrn" },
+    Arguments = new string[] { "see/add/remove", "SteamId", "Aditional parameter" },
     Description = "Manage Warn for a player",
     Permission = "ws.warn",
     Platforms = new[] { Platform.RemoteAdmin, Platform.ServerConsole },
