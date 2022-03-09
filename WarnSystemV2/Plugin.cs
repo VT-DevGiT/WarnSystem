@@ -1,6 +1,4 @@
 ﻿using Synapse.Api.Plugin;
-using Synapse.Api;
-using Synapse;
 
 namespace WarnSystem
 {
@@ -16,7 +14,8 @@ namespace WarnSystem
         )]
     public class Plugin : AbstractPlugin
     {
-        public override void Load(){
+        public override void Load()
+        {
             base.Load();
         }
     }
