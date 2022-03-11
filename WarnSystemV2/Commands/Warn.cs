@@ -32,18 +32,17 @@ namespace WarnSystem.Commands
                 {
                     endArgs += context.Arguments.Array[i] + " ";
                 }
-
+ 
                 // temp logger
                 Logger.Get.Info($"Type: {type}");
                 Logger.Get.Info($"player: {playerStr}");
                 Logger.Get.Info($"endArgs: {endArgs}");
 
-
                 //getting the player
                 Player player = GetPlayerBySteamId(playerStr);
                 if (player == null)
                 {
-                    result.Message = "Player not found";
+                    result.Message = Plugin.Translation.ActiveTranslation.PlayerNotFound;
                     result.State = CommandResultState.Error;
                 }
                 else
@@ -51,13 +50,13 @@ namespace WarnSystem.Commands
                     switch (type)
                     {
                         case "see":
-                            var output = "";
+                            var output = "\n";
                             try
                             {
                                 for (int i = 1; i < 99; i++)
                                 {
-                                    output.Concat(player.GetData($"{i}"));
-                                    output.Concat("\n");
+                                    output += player.GetData($"{i}");
+                                    output+= "\n";
                                 }
                             }
                             catch (System.Exception) { }
@@ -67,8 +66,8 @@ namespace WarnSystem.Commands
                         case "add":
                             player.SetData(GetNumberOfData(player) + 1 + "", endArgs);
                             result.State = CommandResultState.Ok;
-                            result.Message = $"\nPlayer {player.DisplayName} has been warned for {endArgs}";
-                            player.SendBroadcast(10, $"You have been warned for {endArgs}");
+                            result.Message = Plugin.Translation.ActiveTranslation.Warned.Replace("%reason%", endArgs);
+                            player.SendBroadcast(10, Plugin.Translation.ActiveTranslation.WarnSuccess.Replace("%player%", player.NickName).Replace("%reason%", endArgs));
                             break;
                         case "remove":
                             var input = endArgs.Substring(0, 1);
@@ -83,23 +82,21 @@ namespace WarnSystem.Commands
                                 {
                                     player.SetData("" + i, player.GetData("" + j));
                                 }
-
                                 j++;
                             }
-
                             result.State = CommandResultState.Ok;
-                            result.Message = "Warn removed successfully";
+                            result.Message = Plugin.Translation.ActiveTranslation.Remove;
                             break;
                         default:
                             result.State = CommandResultState.Error;
-                            result.Message = "\nInvalid Parameter try with see/add/remove";
+                            result.Message = $"\n{Plugin.Translation.ActiveTranslation.TypeError}";
                             break;
                     }
                 }
             }
             else
             {
-                result.Message = "Not enough args";
+                result.Message = Plugin.Translation.ActiveTranslation.ArgsError;
                 result.State = CommandResultState.Error;
             }
 
