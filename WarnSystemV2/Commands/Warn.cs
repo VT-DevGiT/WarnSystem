@@ -21,7 +21,7 @@ namespace WarnSystem.Commands
             var result = new CommandResult();
 
             //Test if there is enough args
-            if (context.Arguments.Count >= 2)
+            if (context.Arguments.Count >= 3 || context.Arguments.Array[1] == "see")
             {
                 //define parameter of the command
                 var type = context.Arguments.Array[1];
@@ -32,11 +32,6 @@ namespace WarnSystem.Commands
                 {
                     endArgs += context.Arguments.Array[i] + " ";
                 }
- 
-                // temp logger
-                Logger.Get.Info($"Type: {type}");
-                Logger.Get.Info($"player: {playerStr}");
-                Logger.Get.Info($"endArgs: {endArgs}");
 
                 //getting the player
                 Player player = GetPlayerBySteamId(playerStr);
@@ -50,42 +45,60 @@ namespace WarnSystem.Commands
                     switch (type)
                     {
                         case "see":
-                            var output = "\n";
-                            try
+                            if (GetNumberOfData(player) == 0)
                             {
-                                for (int i = 1; i < 99; i++)
-                                {
-                                    output += player.GetData($"{i}");
-                                    output+= "\n";
-                                }
+                                result.Message = Plugin.Translation.ActiveTranslation.NoWarn;
+                                result.State = CommandResultState.Error;
                             }
-                            catch (System.Exception) { }
-                            result.Message = output;
-                            result.State = CommandResultState.Ok;
+                            else
+                            {
+                                string output = $"\n{player.NickName} :\n";
+                            
+                                for (int i = 1; i <= GetNumberOfData(player); i++) 
+                                { 
+                                    output += i+ ": " + player.GetData(i+"")+"\n";
+                                }
+                                result.Message = output;
+                                result.State = CommandResultState.Ok;    
+                            }
                             break;
                         case "add":
-                            player.SetData(GetNumberOfData(player) + 1 + "", endArgs);
+                            player.SetData(GetNumberOfData(player) + 1+"", endArgs);
                             result.State = CommandResultState.Ok;
-                            result.Message = Plugin.Translation.ActiveTranslation.Warned.Replace("%reason%", endArgs);
-                            player.SendBroadcast(10, Plugin.Translation.ActiveTranslation.WarnSuccess.Replace("%player%", player.NickName).Replace("%reason%", endArgs));
+                            result.Message = Plugin.Translation.ActiveTranslation.WarnSuccess.Replace("%reason%", endArgs).Replace("%player%", player.NickName);
+                            player.SendBroadcast(10, Plugin.Translation.ActiveTranslation.Warned.Replace("%reason%", endArgs));
                             break;
                         case "remove":
-                            var input = endArgs.Substring(0, 1);
-                            int j = int.Parse(input) + 1;
-                            for (int i = int.Parse(input); i < GetNumberOfData(player); i++)
+                            if (GetNumberOfData(player) == 0)
                             {
-                                if (player.GetData(j + "") == null)
-                                {
-                                    player.SetData("" + i, "");
-                                }
-                                else
-                                {
-                                    player.SetData("" + i, player.GetData("" + j));
-                                }
-                                j++;
+                                result.Message = Plugin.Translation.ActiveTranslation.NoWarn;
+                                result.State = CommandResultState.Error;
                             }
-                            result.State = CommandResultState.Ok;
-                            result.Message = Plugin.Translation.ActiveTranslation.Remove;
+                            else
+                            {
+                                int input = int.Parse(endArgs);
+                                int j = input + 1;
+                                if (player.GetData(input+"") == null)
+                                {
+                                    result.Message = Plugin.Translation.ActiveTranslation.WarnNotFound;
+                                    result.State = CommandResultState.Error;
+                                    break;
+                                }
+                                for (int i = int.Parse(input+""); i <= GetNumberOfData(player); i++)
+                                {
+                                    if (player.GetData(j + "") == null)
+                                    {
+                                        player.SetData("" + i, null);
+                                    }
+                                    else
+                                    {
+                                        player.SetData("" + i, player.GetData("" + j));
+                                    }
+                                    j++;
+                                }
+                                result.State = CommandResultState.Ok;
+                                result.Message = Plugin.Translation.ActiveTranslation.Remove;    
+                            }
                             break;
                         default:
                             result.State = CommandResultState.Error;
@@ -99,25 +112,20 @@ namespace WarnSystem.Commands
                 result.Message = Plugin.Translation.ActiveTranslation.ArgsError;
                 result.State = CommandResultState.Error;
             }
-
             return result;
         }
 
-        private int GetNumberOfData(Player ply)
+        public static int GetNumberOfData(Player ply)
         {
             int count = 0;
-            try
+            for (int i = 1; i < 99; i++)
             {
-                for (int i = 1; i < 99; i++)
+                if (ply.GetData(i + "") == null)
                 {
-                    ply.GetData($"{i}");
-                    count++;
+                    break;
                 }
+                count++;
             }
-            catch (System.Exception)
-            {
-            }
-
             return count;
         }
 
@@ -125,7 +133,7 @@ namespace WarnSystem.Commands
         {
             try
             {
-                Player player = (Player) Server.Get.Players.Where(x => x.UserId == steamID);
+                Player player = Server.Get.GetPlayerByUID(steamID);
                 return player;
             }
             catch (System.Exception)
