@@ -1,12 +1,11 @@
 using Synapse.Api;
 using Synapse.Command;
-using Unity.Collections.LowLevel.Unsafe;
 
 namespace WarnSystem.Commands
 {
     [CommandInformation(
         Name = "warning",
-        Aliases = new[] {"wrng"},
+        Aliases = new[] {"wrng", "mywarn"},
         Description = "see your own warn",
         Platforms = new[] {Platform.ClientConsole},
         Usage = "warning"
@@ -16,10 +15,11 @@ namespace WarnSystem.Commands
         public CommandResult Execute(CommandContext context)
         {
             var result = new CommandResult();
+
             if (Plugin.Config.PlayerCommand)
             {
                 Player player = context.Player;
-                if (Warn.GetNumberOfData(player) == 0)
+                if (Plugin.GetNumberOfWarns(player) == 0)
                 {
                     result.Message = Plugin.Translation.ActiveTranslation.NoWarn;
                     result.State = CommandResultState.Error;
@@ -28,9 +28,9 @@ namespace WarnSystem.Commands
                 {
                     string output = $"\n{player.NickName} :\n";
                             
-                    for (int i = 1; i <= Warn.GetNumberOfData(player); i++) 
+                    for (int i = 1; i <= Plugin.GetNumberOfWarns(player); i++) 
                     { 
-                        output += i+ ": " + player.GetData(i+"")+"\n";
+                        output += $"{i} : {player.GetData(i.ToString())} \n";
                     }
                     result.Message = output;
                     result.State = CommandResultState.Ok;    

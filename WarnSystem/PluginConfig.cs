@@ -1,5 +1,6 @@
-using System.ComponentModel;
 using Synapse.Config;
+using System.ComponentModel;
+
 namespace WarnSystem
 {
     public class PluginConfig : IConfigSection
