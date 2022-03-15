@@ -84,6 +84,9 @@ namespace WarnSystem
         public static bool RemoveWarn(Player player, int id)
         {
             int j = id + 1;
+
+            player.SetData(WarnsDataKey, (GetNumberOfWarns(player) - 1).ToString());
+
             if (player.GetData(WarnsDataKey + id) == null)
                 return false;
 
