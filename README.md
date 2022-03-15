@@ -4,7 +4,7 @@ WarnSystem is a warn system that use no DBO (DataBase Object) and only Synapse n
 ## Installation
 
 1. [Install Synapse](https://github.com/SynapseSL/Synapse/wiki#hosting-guides).
-2. Place the [dll](https://gitub.com/VT-DevGit/WarnSystem/releases/) file in your plugin directory.
+2. Place the [dll](https://github.com/VT-DevGit/WarnSystem/releases/) file in your plugin directory.
 3. Restart/Start your server.
 
 ## Specification
