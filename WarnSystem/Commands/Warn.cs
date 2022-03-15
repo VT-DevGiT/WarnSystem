@@ -66,7 +66,7 @@ namespace WarnSystem.Commands
                             player.SetData(GetNumberOfData(player) + 1+"", endArgs);
                             result.State = CommandResultState.Ok;
                             result.Message = Plugin.Translation.ActiveTranslation.WarnSuccess.Replace("%reason%", endArgs).Replace("%player%", player.NickName);
-                            player.SendBroadcast(10, Plugin.Translation.ActiveTranslation.Warned.Replace("%reason%", endArgs));
+                            player.SendBroadcast(10, Plugin.Config.PlayerMessage.Replace("%reason%", endArgs));
                             break;
                         case "remove":
                             if (GetNumberOfData(player) == 0)

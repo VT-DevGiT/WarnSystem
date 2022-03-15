@@ -17,32 +17,35 @@ namespace WarnSystem
     {
         [SynapseTranslation]
         public static new SynapseTranslation<PluginTranslation> Translation { get; set; }
+        
+        [Config(section = "WarnSystem")]
+        public static PluginConfig Config { get; set; }
         public override void Load()
         {
             base.Load();
             Translation.AddTranslation(new PluginTranslation());
             Translation.AddTranslation(new PluginTranslation
             {
-                Warned = "Vous avez reçu un avertissement pour %reason%",
                 WarnSuccess = "Le joueur %player% a reçu un avertissement pour %reason%",
                 Remove = "Avertissement retiré",
                 PlayerNotFound = "Joueur non trouvé",
                 ArgsError = "Argument insuffusant",
                 TypeError = "Paramètre Invalide essayez avec see/add/remove",
                 NoWarn = "Le joueur n'a pas d'avertissement",
-                WarnNotFound = "Avertissement non trouvé"
+                WarnNotFound = "Avertissement non trouvé",
+                CommandDisable = "Commande désactivé"
 
             }, "FRENCH");
             Translation.AddTranslation(new PluginTranslation
             {
-                Warned = "Sie haben eine Warnung erhalten für %reason%",
                 WarnSuccess = "Spieler %player% erhielt eine Verwarnung für %reason%",
                 Remove = "Werbung entfernt",
                 PlayerNotFound = "Spieler nicht gefunden",
                 ArgsError = "Nicht genug Argumente",
                 TypeError = "Ungültiger Parameter Versuch mit see/add/remove",
                 NoWarn = "Der Spieler hat keine Warnung",
-                WarnNotFound = "Warnung nicht gefunden"
+                WarnNotFound = "Warnung nicht gefunden",
+                CommandDisable = "Befehl deaktiviert"
             }, "GERMAN");
 
         }

@@ -5,10 +5,6 @@ namespace WarnSystem
 {
     public class PluginTranslation : IPluginTranslation
     {
-        [Description("Message send to the player when he is warned. %reason% give the reason of its warn")]
-        public string Warned { get; set; } = "You have been warned for %reason%";
-
-        [Description("Message send when command completed successfully. %player% is the player name and %reason% is the reason of the warn")]
         public string WarnSuccess { get; set; } = "You have warned %player% for %reason%"; 
 
         public string Remove { get; set; } = "Warn removed successfully";
@@ -22,5 +18,7 @@ namespace WarnSystem
         public string NoWarn { get; set; } = "The player has no warn";
 
         public string WarnNotFound { get; set; } = "Warn not found";
+
+        public string CommandDisable { get; set; } = "Command disabled";
     }
 }
