@@ -28,7 +28,9 @@ namespace WarnSystem
                 Remove = "Avertissement retiré",
                 PlayerNotFound = "Joueur non trouvé",
                 ArgsError = "Argument insuffusant",
-                TypeError = "Paramètre Invalide essayez avec see/add/remove"
+                TypeError = "Paramètre Invalide essayez avec see/add/remove",
+                NoWarn = "Le joueur n'a pas d'avertissement",
+                WarnNotFound = "Avertissement non trouvé"
 
             }, "FRENCH");
             Translation.AddTranslation(new PluginTranslation
@@ -38,7 +40,9 @@ namespace WarnSystem
                 Remove = "Werbung entfernt",
                 PlayerNotFound = "Spieler nicht gefunden",
                 ArgsError = "Nicht genug Argumente",
-                TypeError = "Ungültiger Parameter Versuch mit see/add/remove"
+                TypeError = "Ungültiger Parameter Versuch mit see/add/remove",
+                NoWarn = "Der Spieler hat keine Warnung",
+                WarnNotFound = "Warnung nicht gefunden"
             }, "GERMAN");
 
         }

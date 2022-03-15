@@ -18,5 +18,9 @@ namespace WarnSystem
         public string ArgsError { get; set; } = "Not enough arguments";
 
         public string TypeError { get; set; } = "Invalid Parameter try with see/add/remove";
+
+        public string NoWarn { get; set; } = "The player has no warn";
+
+        public string WarnNotFound { get; set; } = "Warn not found";
     }
 }
