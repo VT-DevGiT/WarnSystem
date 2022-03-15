@@ -1,5 +1,5 @@
 # WarnSystem
-WarnSystemV2 is a second WarnSystem that use no DBO and only Synapse native database.
+WarnSystem is a warn system that use no DBO (DataBase Object) and only Synapse native database.
 
 ## Installation
 
@@ -9,10 +9,10 @@ WarnSystemV2 is a second WarnSystem that use no DBO and only Synapse native data
 
 ## Specification
 
-This system can go up to infinite warn per player. It display a broadcast to the player with a message (configurable).
+This system can go up to infinite warn per player. Players are also able to see there warn in the client console with `.warning` command that doesn't require any permission but can be disabled in the config. It display a broadcast to the player with a message (configurable).
 
 ## Permission
-This plugin only contains one permission, for the command to warn other player. You can remove, add and see warn. Players are also able to see there warn in the client console with `.warning` command that doesn't require any permission.
+This plugin only contains one permission, for the command to warn other player. You can remove, add and see warn.
 
 ```
 - ws.warn	: add/see/remove warns
