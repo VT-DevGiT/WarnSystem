@@ -118,7 +118,7 @@ namespace WarnSystem.Commands
         public static int GetNumberOfData(Player ply)
         {
             int count = 0;
-            for (int i = 1; i < 99; i++)
+            for (int i = 1; i > -1; i++)
             {
                 if (ply.GetData(i + "") == null)
                 {
