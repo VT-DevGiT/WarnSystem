@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="PluginConfig.cs~RF12f71e2.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="SynapseSL" Version="2.9.0" />
   </ItemGroup>
 

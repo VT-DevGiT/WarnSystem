@@ -1,5 +1,4 @@
 using Synapse.Translation;
-using System.ComponentModel;
 
 namespace WarnSystem
 {
