@@ -19,5 +19,7 @@ namespace WarnSystem
         public string WarnNotFound { get; set; } = "Warn not found";
 
         public string CommandDisable { get; set; } = "Command disabled";
+
+        public string WarnDnt { get; set; } = "WarnSystem is gonna store data with you (its the warns)";
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Synapse.Api;
+using Synapse.Api.Events.SynapseEventArguments;
 using Synapse.Api.Plugin;
 using Synapse.Translation;
 
@@ -37,7 +38,8 @@ namespace WarnSystem
                 TypeError = "Paramètre Invalide essayez avec see/add/remove",
                 NoWarn = "Le joueur n'a pas d'avertissement",
                 WarnNotFound = "Avertissement non trouvé",
-                CommandDisable = "Commande désactivé"
+                CommandDisable = "Commande désactivé",
+                WarnDnt = "WarnSystem va stocker des données avec vous (ce sont les avertissements)"
 
             }, "FRENCH");
             Translation.AddTranslation(new PluginTranslation
@@ -49,9 +51,20 @@ namespace WarnSystem
                 TypeError = "Ungültiger Parameter Versuch mit see/add/remove",
                 NoWarn = "Der Spieler hat keine Warnung",
                 WarnNotFound = "Warnung nicht gefunden",
-                CommandDisable = "Befehl deaktiviert"
+                CommandDisable = "Befehl deaktiviert",
+                WarnDnt = "WarnSystem wird Daten bei Ihnen speichern (es sind die Warnungen)"
             }, "GERMAN");
-            
+
+            SynapseController.Server.Events.Player.PlayerJoinEvent += OnJoin;
+        }
+
+        private void OnJoin(PlayerJoinEventArgs ev)
+        {
+            if (ev.Player.GetData(WarnsDataKey + "firstconnection") == null && Config.DisclamerAtFirstConnection)
+            {
+                ev.Player.SetData(WarnsDataKey+ "firstconnection", "oui");
+                ev.Player.SendBroadcast(5, Translation.ActiveTranslation.WarnDnt);
+            }
         }
 
         public static int GetNumberOfWarns(Player player)
