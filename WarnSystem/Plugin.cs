@@ -1,6 +1,8 @@
-﻿using Synapse.Api;
+﻿using MEC;
+using Synapse.Api;
 using Synapse.Api.Events.SynapseEventArguments;
 using Synapse.Api.Plugin;
+using Synapse.Database;
 using Synapse.Translation;
 
 namespace WarnSystem
@@ -60,9 +62,9 @@ namespace WarnSystem
 
         private void OnJoin(PlayerJoinEventArgs ev)
         {
-            if (ev.Player.GetData(WarnsDataKey + "firstconnection") == null && Config.DisclamerAtFirstConnection)
+            if (ev.Player.GetData("firstconnection") is null && Config.DisclamerAtFirstConnection)
             {
-                ev.Player.SetData(WarnsDataKey+ "firstconnection", "oui");
+                ev.Player.SetData("firstconnection", "oui");
                 ev.Player.SendBroadcast(5, Translation.ActiveTranslation.WarnDnt);
             }
         }
