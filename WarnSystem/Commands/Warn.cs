@@ -26,16 +26,13 @@ namespace WarnSystem.Commands
             {
                 //define parameter of the command
                 var cmdType = context.Arguments.Array[1];
-                var playerStr = context.Arguments.Array[2];
                 var arguments = "";
+                var player = context.Arguments.Count == 1 ? context.Player : Server.Get.GetPlayer(context.Arguments.Array[2]);
+
                 //gets all the final parameter
                 for (int i = 3; i < context.Arguments.Array.Count(); i++)
-                {
-                    arguments += context.Arguments.Array[i] + " ";
-                }
+                    arguments += context.Arguments.Array [i] + " ";
 
-                //getting the player
-                Player player = Server.Get.GetPlayer(playerStr);
                 if (player == null)
                 {
                     result.Message = Plugin.Translation.ActiveTranslation.PlayerNotFound;
@@ -43,25 +40,26 @@ namespace WarnSystem.Commands
                 }
                 else
                 {
+                    int numberOfWarn = Plugin.GetNumberOfWarns(player);
                     switch (cmdType)
                     {
-                        case "remove" when Plugin.GetNumberOfWarns(player) == 0:
-                        case "see" when Plugin.GetNumberOfWarns(player) == 0:
+                        case "add":
+                            var message = Plugin.Translation.ActiveTranslation.WarnSuccess;
+                            message = Regex.Replace(message, "%reason%", arguments,       RegexOptions.IgnoreCase);
+                            message = Regex.Replace(message, "%player%", player.NickName, RegexOptions.IgnoreCase);
+                            player.SendBroadcast(10, Plugin.Config.PlayerMessage.Replace("%reason%", arguments));
+                            Plugin.AddWarn(player, arguments);
+                            result.State = CommandResultState.Ok;
+                            result.Message = message;
+                            break;
+                        case "remove" when numberOfWarn == 0:
+                        case "see" when numberOfWarn == 0:
                             result.Message = Plugin.Translation.ActiveTranslation.NoWarn;
                             result.State = CommandResultState.Error;
                             break;
                         case "see":
                             result.Message = Plugin.SeeWarns(player);
                             result.State = CommandResultState.Ok;
-                            break;
-                        case "add":
-                            var message = Plugin.Translation.ActiveTranslation.WarnSuccess;
-                            message = Regex.Replace(message, "%reason%", arguments, RegexOptions.IgnoreCase);
-                            message = Regex.Replace(message, "%player%", player.NickName, RegexOptions.IgnoreCase);
-                            player.SendBroadcast(10, Plugin.Config.PlayerMessage.Replace("%reason%", arguments));
-                            Plugin.AddWarn(player, arguments);
-                            result.State = CommandResultState.Ok;
-                            result.Message = message;
                             break;
                         case "remove":
                             if (!int.TryParse(arguments, out int id))

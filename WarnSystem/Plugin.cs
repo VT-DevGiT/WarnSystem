@@ -2,6 +2,7 @@
 using Synapse.Api.Plugin;
 using Synapse.Database;
 using Synapse.Translation;
+using System;
 
 namespace WarnSystem
 {
@@ -31,6 +32,7 @@ namespace WarnSystem
         {
             base.Load();
             DatabaseManager.CheckEnabledOrThrow();
+            new EventsHandler();
 
             Translation.AddTranslation(new PluginTranslation());
             Translation.AddTranslation(new PluginTranslation
@@ -66,13 +68,13 @@ namespace WarnSystem
             => player.GetData(WarnsDataKey) != null;
 
         public static bool WarnIsSet(PlayerDbo dbo)
-            => dbo.Data[WarnsDataKey] != null;
+            => dbo.Data.ContainsKey(WarnsDataKey);
 
         public static int GetNumberOfWarns(Player player)
             => int.Parse(player.GetData(WarnsDataKey) ?? "0");
 
         public static int GetNumberOfWarns(PlayerDbo dbo)
-            => int.Parse(dbo.Data[WarnsDataKey] ?? "0");
+            => int.Parse(dbo.Data.ContainsKey(WarnsDataKey) ? dbo.Data[WarnsDataKey] : "0");
 
         public static void SetNumberOfWarns(Player player, int value)
             => player.SetData(WarnsDataKey, value.ToString());
@@ -84,7 +86,7 @@ namespace WarnSystem
             => player.GetData(WarnsDataKey + id);
 
         public static string SeeWarn(PlayerDbo dbo, int id)
-            => dbo.Data[WarnsDataKey + id];
+            => dbo.Data.ContainsKey(WarnsDataKey) ? dbo.Data[WarnsDataKey] : "";
 
         public static void SetWarn(Player player, int id, string value)
             => player.SetData(WarnsDataKey + id, value);
@@ -128,7 +130,7 @@ namespace WarnSystem
             SetNumberOfWarns(dbo, warnCount - 1);
 
             for (int i = id, j = i + 1; i <= warnCount - 1; i++, j++)
-                SetWarn(dbo, i, SeeWarn(dbo, j));
+                SetWarn(dbo, i, i == warnCount ? null : SeeWarn(dbo, j));
 
             DatabaseManager.PlayerRepository.Save(dbo);
             return true;
