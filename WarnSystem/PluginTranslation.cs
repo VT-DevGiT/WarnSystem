@@ -20,6 +20,6 @@ namespace WarnSystem
 
         public string CommandDisable { get; set; } = "Command disabled";
 
-        public string WarnDnt { get; set; } = "WarnSystem is gonna store data with you (its the warns)";
+        public string WarnDnt { get; set; } = "The serveur need to store data of you for security reason";
     }
 }

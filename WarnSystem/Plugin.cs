@@ -1,6 +1,4 @@
-﻿using MEC;
-using Synapse.Api;
-using Synapse.Api.Events.SynapseEventArguments;
+﻿using Synapse.Api;
 using Synapse.Api.Plugin;
 using Synapse.Database;
 using Synapse.Translation;
@@ -21,6 +19,8 @@ namespace WarnSystem
     {
         public const string WarnsDataKey = "Warn";
 
+        #region Plugin Stuff
+
         [SynapseTranslation]
         public static new SynapseTranslation<PluginTranslation> Translation { get; set; }
         
@@ -30,6 +30,8 @@ namespace WarnSystem
         public override void Load()
         {
             base.Load();
+            DatabaseManager.CheckEnabledOrThrow();
+
             Translation.AddTranslation(new PluginTranslation());
             Translation.AddTranslation(new PluginTranslation
             {
@@ -41,7 +43,7 @@ namespace WarnSystem
                 NoWarn = "Le joueur n'a pas d'avertissement",
                 WarnNotFound = "Avertissement non trouvé",
                 CommandDisable = "Commande désactivé",
-                WarnDnt = "WarnSystem va stocker des données avec vous (ce sont les avertissements)"
+                WarnDnt = "Le serveur a besoin de stocker vos données pour des raisons de sécurité"
 
             }, "FRENCH");
             Translation.AddTranslation(new PluginTranslation
@@ -54,63 +56,83 @@ namespace WarnSystem
                 NoWarn = "Der Spieler hat keine Warnung",
                 WarnNotFound = "Warnung nicht gefunden",
                 CommandDisable = "Befehl deaktiviert",
-                WarnDnt = "WarnSystem wird Daten bei Ihnen speichern (es sind die Warnungen)"
+                WarnDnt = "Der Server muss aus Sicherheitsgründen Daten von Ihnen speichern"
             }, "GERMAN");
-
-            SynapseController.Server.Events.Player.PlayerJoinEvent += OnJoin;
         }
+        #endregion
 
-        private void OnJoin(PlayerJoinEventArgs ev)
-        {
-            if (ev.Player.GetData("firstconnection") is null && Config.DisclamerAtFirstConnection)
-            {
-                ev.Player.SetData("firstconnection", "oui");
-                ev.Player.SendBroadcast(5, Translation.ActiveTranslation.WarnDnt);
-            }
-        }
+        #region Base of Warn Method
+        public static bool WarnIsSet(Player player)
+            => player.GetData(WarnsDataKey) != null;
+
+        public static bool WarnIsSet(PlayerDbo dbo)
+            => dbo.Data[WarnsDataKey] != null;
 
         public static int GetNumberOfWarns(Player player)
             => int.Parse(player.GetData(WarnsDataKey) ?? "0");
-        
 
-        public static void AddWarn(Player player, string reason)
-        {
-            var newNumberWarns = (GetNumberOfWarns(player) + 1).ToString();
+        public static int GetNumberOfWarns(PlayerDbo dbo)
+            => int.Parse(dbo.Data[WarnsDataKey] ?? "0");
 
-            player.SetData(WarnsDataKey, newNumberWarns);
-            player.SetData(WarnsDataKey + newNumberWarns, reason);
+        public static void SetNumberOfWarns(Player player, int value)
+            => player.SetData(WarnsDataKey, value.ToString());
 
-        }
+        public static void SetNumberOfWarns(PlayerDbo dbo, int value)
+            => dbo.Data[WarnsDataKey] = value.ToString();
 
         public static string SeeWarn(Player player, int id)
             => player.GetData(WarnsDataKey + id);
-        
 
+        public static string SeeWarn(PlayerDbo dbo, int id)
+            => dbo.Data[WarnsDataKey + id];
+
+        public static void SetWarn(Player player, int id, string value)
+            => player.SetData(WarnsDataKey + id, value);
+
+        public static void SetWarn(PlayerDbo dbo, int id, string value)
+            => dbo.Data[WarnsDataKey + id] = value;
+        #endregion
+
+        #region Warn Method
+        public static void AddWarn(Player player, string reason)
+        {
+            var dbo = DatabaseManager.PlayerRepository.FindByGameId(player.UserId);
+            var newNumberWarns = GetNumberOfWarns(dbo) + 1;
+
+            SetNumberOfWarns(dbo, newNumberWarns);
+            SetWarn(dbo, newNumberWarns, reason);
+
+            DatabaseManager.PlayerRepository.Save(dbo);
+        }
+        
         public static string SeeWarns(Player player)
         {
+            var dbo = DatabaseManager.PlayerRepository.FindByGameId(player.UserId);
+            int warnCount = GetNumberOfWarns(dbo);
             string output = $"\n{player.NickName} :\n";
 
-            for (int id = 1; id <= GetNumberOfWarns(player); id++)
-                output += $"{id} : {player.GetData(WarnsDataKey + id)}\n";
+            for (int id = 1; id <= warnCount; id++)
+                output += $"{id} : {SeeWarn(dbo, id)}\n";
 
             return output;
         }
 
         public static bool RemoveWarn(Player player, int id)
         {
-            int j = id + 1;
+            var dbo = DatabaseManager.PlayerRepository.FindByGameId(player.UserId);
+            int warnCount = GetNumberOfWarns(dbo);
 
-            player.SetData(WarnsDataKey, (GetNumberOfWarns(player) - 1).ToString());
-
-            if (player.GetData(WarnsDataKey + id) == null)
+            if (warnCount < id)
                 return false;
 
-            for (int i = id; i <= Plugin.GetNumberOfWarns(player); i++, j++)
-            {
-                player.SetData(i.ToString(), player.GetData(j.ToString()));
-            }
+            SetNumberOfWarns(dbo, warnCount - 1);
+
+            for (int i = id, j = i + 1; i <= warnCount - 1; i++, j++)
+                SetWarn(dbo, i, SeeWarn(dbo, j));
+
+            DatabaseManager.PlayerRepository.Save(dbo);
             return true;
         }
-
+        #endregion
     }
 }
