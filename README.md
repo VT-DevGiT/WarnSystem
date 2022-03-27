@@ -1,5 +1,6 @@
 # WarnSystem
 WarnSystem is a warn system that use no DBO (DataBase Object) and only Synapse native database.
+The Admin can warn a player and the warn is register.
 
 ## Installation
 
