@@ -4,13 +4,13 @@ using Synapse.Command;
 namespace WarnSystem.Commands
 {
     [CommandInformation(
-        Name = "warning",
-        Aliases = new[] {"wrng", "mywarn"},
+        Name = "seemywarn",
+        Aliases = new[] {"seewarn", "mywarn"},
         Description = "see your own warn",
         Platforms = new[] {Platform.ClientConsole},
-        Usage = "warning"
+        Usage = "type seemywarn in the console"
     )]
-    public class Warning : ISynapseCommand
+    public class SeeMyWarn : ISynapseCommand
     {
         public CommandResult Execute(CommandContext context)
         {

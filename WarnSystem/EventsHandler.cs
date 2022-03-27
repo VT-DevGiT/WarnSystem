@@ -16,18 +16,18 @@ namespace WarnSystem
             MEC.Timing.CallDelayed(0.1f, () => OnJoinDelayed(ev.Player));
         }
 
-        private void OnJoinDelayed(Player ply)
+        private void OnJoinDelayed(Player player)
         {
             if (!Plugin.Config.DisclamerAtFirstConnection)
                 return;
 
-            PlayerDbo dbo = DatabaseManager.PlayerRepository.FindByGameId(ply.UserId);
+            PlayerDbo dbo = DatabaseManager.PlayerRepository.FindByGameId(player.UserId);
             if (!Plugin.WarnIsSet(dbo))
             {
                 Plugin.SetNumberOfWarns(dbo, 0);
                 DatabaseManager.PlayerRepository.Save(dbo);
 
-                ply.SendBroadcast(5, Plugin.Translation.ActiveTranslation.WarnDnt);
+                player.SendBroadcast(5, Plugin.Translation.ActiveTranslation.WarnDnt);
             }
         }
     }
