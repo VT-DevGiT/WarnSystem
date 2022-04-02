@@ -47,7 +47,8 @@ namespace WarnSystem.Commands
                             var message = Plugin.Translation.ActiveTranslation.WarnSuccess;
                             message = Regex.Replace(message, "%reason%", arguments,       RegexOptions.IgnoreCase);
                             message = Regex.Replace(message, "%player%", player.NickName, RegexOptions.IgnoreCase);
-                            player.SendBroadcast(10, Plugin.Config.PlayerMessage.Replace("%reason%", arguments));
+                            string bcMessage = Regex.Replace(Plugin.Translation.ActiveTranslation.PlayerMessage, "%reason%", arguments, RegexOptions.IgnoreCase);
+                            player.SendBroadcast(10, bcMessage);
                             Plugin.AddWarn(player, arguments);
                             result.State = CommandResultState.Ok;
                             result.Message = message;

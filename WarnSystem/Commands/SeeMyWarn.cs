@@ -27,11 +27,9 @@ namespace WarnSystem.Commands
                 else
                 {
                     string output = $"\n{player.NickName} :\n";
-                            
-                    for (int i = 1; i <= Plugin.GetNumberOfWarns(player); i++) 
-                    { 
-                        output += $"{i} : {player.GetData(i.ToString())} \n";
-                    }
+
+                    output += Plugin.SeeWarns(player);
+
                     result.Message = output;
                     result.State = CommandResultState.Ok;    
                 }

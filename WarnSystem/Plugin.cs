@@ -45,7 +45,8 @@ namespace WarnSystem
                 NoWarn = "Le joueur n'a pas d'avertissement",
                 WarnNotFound = "Avertissement non trouvé",
                 CommandDisable = "Commande désactivé",
-                WarnDnt = "Le serveur a besoin de stocker vos données pour des raisons de sécurité"
+                WarnDnt = "Le serveur a besoin de stocker vos données pour des raisons de sécurité",
+                PlayerMessage = "Vous avez été averti pour : \"<color=red>%reason%</color>\""
 
             }, "FRENCH");
             Translation.AddTranslation(new PluginTranslation
@@ -58,7 +59,8 @@ namespace WarnSystem
                 NoWarn = "Der Spieler hat keine Warnung",
                 WarnNotFound = "Warnung nicht gefunden",
                 CommandDisable = "Befehl deaktiviert",
-                WarnDnt = "Der Server muss aus Sicherheitsgründen Daten von Ihnen speichern"
+                WarnDnt = "Der Server muss aus Sicherheitsgründen Daten von Ihnen speichern",
+                PlayerMessage = "Sie haben Gewarnt zum : \"<color=red>%reason%</color>\""
             }, "GERMAN");
         }
         #endregion
