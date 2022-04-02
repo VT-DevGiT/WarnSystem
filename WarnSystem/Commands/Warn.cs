@@ -20,20 +20,26 @@ namespace WarnSystem.Commands
         public CommandResult Execute(CommandContext context)
         {
             var result = new CommandResult();
-
+            
             //Test if there is enough args
-            if (context.Arguments.Count >= 3 || context.Arguments.Array[1] == "see")
+            if (context.Arguments.Count >= 3 || (context.Arguments.Count >= 1 && context.Arguments.Array[1] == "see"))
             {
+                //if warn see serverconsole
+                if (context.Platform == Platform.ServerConsole && context.Arguments.Array[1] == "see" && context.Arguments.Count == 1)
+                {
+                    result.Message = Plugin.Translation.ActiveTranslation.PlayerNotFound;
+                    result.State = CommandResultState.Error;
+                    return result;
+                }
                 //define parameter of the command
                 var cmdType = context.Arguments.Array[1];
                 var arguments = "";
-                var player = context.Arguments.Count == 1 ? context.Player : Server.Get.GetPlayer(context.Arguments.Array[2]);
+                Player player = context.Arguments.Count == 1 ? context.Player : Server.Get.GetPlayer(context.Arguments.Array[2]);
 
                 //gets all the final parameter
                 for (int i = 3; i < context.Arguments.Array.Count(); i++)
                     arguments += context.Arguments.Array [i] + " ";
-
-                if (player == null)
+                if (player is null)
                 {
                     result.Message = Plugin.Translation.ActiveTranslation.PlayerNotFound;
                     result.State = CommandResultState.Error;
