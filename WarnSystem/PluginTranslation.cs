@@ -20,7 +20,7 @@ namespace WarnSystem
 
         public string CommandDisable { get; set; } = "Command disabled";
 
-        public string WarnDnt { get; set; } = "The serveur need to store data of you for security reason";
+        public string WarnDnt { get; set; } = "The server need to store data of you for security reason";
 
         public string PlayerMessage { get; set; } = "You have been warned for : \"<color=red>%reason%</color>\"";
     }
