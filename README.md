@@ -10,7 +10,7 @@ The Admin can warn a player and the warn is register.
 
 ## Specification
 
-This system can go up to infinite warn per player. Players are also able to see there warn in the client console with `.warning` command that doesn't require any permission but can be disabled in the config. It display a broadcast to the player with a message (configurable).
+This system can go up to infinite warn per player. Players are also able to see there warn in the client console with `.seemywarn` command that doesn't require any permission but can be disabled in the config. It display a broadcast to the player with a message (configurable).
 
 ## Permission
 This plugin only contains one permission, for the command to warn other player. You can remove, add and see warn.

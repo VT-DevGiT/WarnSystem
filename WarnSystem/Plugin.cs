@@ -88,7 +88,8 @@ namespace WarnSystem
             => player.GetData(WarnsDataKey + id);
 
         public static string SeeWarn(PlayerDbo dbo, int id)
-            => dbo.Data.ContainsKey(WarnsDataKey+id) ? dbo.Data[WarnsDataKey+id] : "";
+            => dbo.Data.ContainsKey(WarnsDataKey + id) ? dbo.Data[WarnsDataKey + id] : "";
+
 
         public static void SetWarn(Player player, int id, string value)
             => player.SetData(WarnsDataKey + id, value);
