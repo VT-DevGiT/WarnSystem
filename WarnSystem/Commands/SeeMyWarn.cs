@@ -26,10 +26,7 @@ namespace WarnSystem.Commands
                 }
                 else
                 {
-                    string output = $"\n{player.NickName} :\n";
-
-                    output += Plugin.SeeWarns(player);
-
+                    string output = Plugin.SeeWarns(player);
                     result.Message = output;
                     result.State = CommandResultState.Ok;    
                 }
