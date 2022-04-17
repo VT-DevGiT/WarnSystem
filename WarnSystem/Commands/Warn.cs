@@ -13,7 +13,7 @@ namespace WarnSystem.Commands
         Description = "Manage Warn for a player",
         Permission = "ws.warn",
         Platforms = new[] {Platform.RemoteAdmin, Platform.ServerConsole},
-        Usage = "warn see Exemple@steam | warn add Exempl@steam Warned | warn remove Exemple@steam 1"
+        Usage = "warn see <PlayerId> | warn add <PlayerId> Warned | warn remove <PlayerId> <WarnID>"
     )]
     public class Warn : ISynapseCommand
     {
@@ -50,14 +50,22 @@ namespace WarnSystem.Commands
                     switch (cmdType)
                     {
                         case "add":
-                            var message = Plugin.Translation.ActiveTranslation.WarnSuccess;
-                            message = Regex.Replace(message, "%reason%", arguments,       RegexOptions.IgnoreCase);
-                            message = Regex.Replace(message, "%player%", player.NickName, RegexOptions.IgnoreCase);
-                            string bcMessage = Regex.Replace(Plugin.Translation.ActiveTranslation.PlayerMessage, "%reason%", arguments, RegexOptions.IgnoreCase);
-                            player.SendBroadcast(10, bcMessage);
-                            Plugin.AddWarn(player, arguments);
-                            result.State = CommandResultState.Ok;
-                            result.Message = message;
+                            if (context.Player.HasPermission("ws.add"))
+                            {
+                                var message = Plugin.Translation.ActiveTranslation.WarnSuccess;
+                                message = Regex.Replace(message, "%reason%", arguments,       RegexOptions.IgnoreCase);
+                                message = Regex.Replace(message, "%player%", player.NickName, RegexOptions.IgnoreCase);
+                                string bcMessage = Regex.Replace(Plugin.Translation.ActiveTranslation.PlayerMessage, "%reason%", arguments, RegexOptions.IgnoreCase);
+                                player.SendBroadcast(10, bcMessage);
+                                Plugin.AddWarn(player, arguments);
+                                result.State = CommandResultState.Ok;
+                                result.Message = message;    
+                            }
+                            else
+                            {
+                                result.State = CommandResultState.Error;
+                                result.Message = Plugin.Translation.ActiveTranslation.NoPermission;
+                            }
                             break;
                         case "remove" when numberOfWarn == 0:
                         case "see" when numberOfWarn == 0:
@@ -65,24 +73,40 @@ namespace WarnSystem.Commands
                             result.State = CommandResultState.Error;
                             break;
                         case "see":
-                            result.Message = Plugin.SeeWarns(player);
-                            result.State = CommandResultState.Ok;
-                            break;
-                        case "remove":
-                            if (!int.TryParse(arguments, out int id))
+                            if (context.Player.HasPermission("ws.see"))
                             {
-                                result.Message = Plugin.Translation.ActiveTranslation.WarnNotFound;
-                                result.State = CommandResultState.Error;
-                            }
-                            else if (Plugin.RemoveWarn(player, id))
-                            {
-                                result.State = CommandResultState.Ok;
-                                result.Message = Plugin.Translation.ActiveTranslation.Remove;
+                                result.Message = Plugin.SeeWarns(player);
+                                result.State = CommandResultState.Ok;    
                             }
                             else
                             {
-                                result.Message = Plugin.Translation.ActiveTranslation.WarnNotFound;
                                 result.State = CommandResultState.Error;
+                                result.Message = Plugin.Translation.ActiveTranslation.NoPermission;
+                            }
+                            break;
+                        case "remove":
+                            if (context.Player.HasPermission("ws.remove"))
+                            {
+                                if (!int.TryParse(arguments, out int id))
+                                {
+                                    result.Message = Plugin.Translation.ActiveTranslation.WarnNotFound;
+                                    result.State = CommandResultState.Error;
+                                }
+                                else if (Plugin.RemoveWarn(player, id))
+                                {
+                                    result.State = CommandResultState.Ok;
+                                    result.Message = Plugin.Translation.ActiveTranslation.Remove;
+                                }
+                                else
+                                {
+                                    result.Message = Plugin.Translation.ActiveTranslation.WarnNotFound;
+                                    result.State = CommandResultState.Error;
+                                }
+                            }
+                            else
+                            {
+                                result.State = CommandResultState.Error;
+                                result.Message = Plugin.Translation.ActiveTranslation.NoPermission;
                             }
                             break;
                         default:
