@@ -13,7 +13,7 @@ namespace WarnSystem.Commands
         Description = "Manage Warn for a player",
         Permission = "ws.warn",
         Platforms = new[] {Platform.RemoteAdmin, Platform.ServerConsole},
-        Usage = "warn see Exemple@steam | warn add Exempl@steam Warned | warn remove Exemple@steam 1"
+        Usage = "warn see <PlayerID> | warn add <PlayerID> <reason> | warn remove <PlayerID> <WarnID>"
     )]
     public class Warn : ISynapseCommand
     {

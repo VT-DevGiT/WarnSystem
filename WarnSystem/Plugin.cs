@@ -14,7 +14,7 @@ namespace WarnSystem
         SynapseMajor = SynapseController.SynapseMajor,
         SynapseMinor = SynapseController.SynapseMinor,
         SynapsePatch = SynapseController.SynapsePatch,
-        Version = "v1.0.0"
+        Version = "v1.0.1"
         )]
     public class Plugin : AbstractPlugin
     {
@@ -46,7 +46,7 @@ namespace WarnSystem
                 WarnNotFound = "Avertissement non trouvé",
                 CommandDisable = "Commande désactivé",
                 WarnDnt = "Le serveur a besoin de stocker vos données pour des raisons de sécurité",
-                PlayerMessage = "Vous avez été averti pour : \"<color=red>%reason%</color>\""
+                PlayerMessage = "Vous avez été averti pour : <color=red>%reason%</color>"
 
             }, "FRENCH");
             Translation.AddTranslation(new PluginTranslation
@@ -60,7 +60,7 @@ namespace WarnSystem
                 WarnNotFound = "Warnung nicht gefunden",
                 CommandDisable = "Befehl deaktiviert",
                 WarnDnt = "Der Server muss aus Sicherheitsgründen Daten von Ihnen speichern",
-                PlayerMessage = "Sie haben Gewarnt zum : \"<color=red>%reason%</color>\""
+                PlayerMessage = "Sie haben Gewarnt zum : <color=red>%reason%</color>"
             }, "GERMAN");
         }
         #endregion
