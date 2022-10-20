@@ -14,7 +14,7 @@ namespace WarnSystem
         SynapseMajor = SynapseController.SynapseMajor,
         SynapseMinor = SynapseController.SynapseMinor,
         SynapsePatch = SynapseController.SynapsePatch,
-        Version = "v1.0.0"
+        Version = "v1.0.1"
         )]
     public class Plugin : AbstractPlugin
     {
@@ -48,7 +48,6 @@ namespace WarnSystem
                 WarnDnt = "Le serveur a besoin de stocker vos données pour des raisons de sécurité",
                 PlayerMessage = "Vous avez été averti pour : \"<color=red>%reason%</color>\"",
                 NoPermission = "Vous n'avez pas la permission d'utiliser cette commande",
-
             }, "FRENCH");
             Translation.AddTranslation(new PluginTranslation
             {
