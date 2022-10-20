@@ -11,7 +11,7 @@ namespace WarnSystem.Commands
         Aliases = new[] {"wrn"},
         Arguments = new[] {"see/add/remove", "Player", "(reason or warn id)"},
         Description = "Manage Warn for a player",
-        Permission = "ws.warn",
+        Permission = "ws",
         Platforms = new[] {Platform.RemoteAdmin, Platform.ServerConsole},
         Usage = "warn see <PlayerId> | warn add <PlayerId> Warned | warn remove <PlayerId> <WarnID>"
     )]
