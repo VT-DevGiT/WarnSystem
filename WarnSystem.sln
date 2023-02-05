@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32203.90
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarnSystem", "WarnSystem\WarnSystem.csproj", "{C305888E-43ED-42F2-9AB1-5C2406F3F7A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarnSystemModule", "WarnSystemModule\WarnSystemModule.csproj", "{35B05F15-053E-405F-AEE4-DE6CBB45BD5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{C305888E-43ED-42F2-9AB1-5C2406F3F7A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C305888E-43ED-42F2-9AB1-5C2406F3F7A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C305888E-43ED-42F2-9AB1-5C2406F3F7A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35B05F15-053E-405F-AEE4-DE6CBB45BD5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35B05F15-053E-405F-AEE4-DE6CBB45BD5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35B05F15-053E-405F-AEE4-DE6CBB45BD5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35B05F15-053E-405F-AEE4-DE6CBB45BD5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

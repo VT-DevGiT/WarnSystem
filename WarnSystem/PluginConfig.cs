@@ -1,9 +1,12 @@
-using Synapse.Config;
+using Neuron.Core.Meta;
+using Syml;
 using System.ComponentModel;
 
 namespace WarnSystem
 {
-    public class PluginConfig : IConfigSection
+    [Automatic]
+    [DocumentSection("WarnSystem")]
+    public class PluginConfig : IDocumentSection
     {
         [Description("Allow the player to use the client console command to his own warn")]
         public bool PlayerCommand { get; set; } = true;

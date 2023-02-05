@@ -1,0 +1,68 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+		<PlatformTarget>x64</PlatformTarget>
+		<LangVersion>10.0</LangVersion>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<OutputType>Library</OutputType>
+		<Platforms>AnyCPU</Platforms>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="0Harmony">
+			<HintPath>..\..\PluginArkazia2\Reference\0Harmony.dll</HintPath>
+		</Reference>
+		<Reference Include="Assembly-CSharp-firstpass">
+			<HintPath>..\..\PluginArkazia2\Reference\Assembly-CSharp-firstpass.dll</HintPath>
+		</Reference>
+		<Reference Include="Assembly-CSharp">
+			<HintPath>..\..\PluginArkazia2\Reference\Assembly-CSharp-Publicized.dll</HintPath>
+		</Reference>
+		<Reference Include="Mirror">
+			<HintPath>..\..\PluginArkazia2\Reference\Mirror_publicized.dll</HintPath>
+		</Reference>
+		<Reference Include="Neuron.Core">
+			<HintPath>..\..\PluginArkazia2\Reference\Neuron.Core.dll</HintPath>
+		</Reference>
+		<Reference Include="Neuron.Modules.Commands">
+			<HintPath>..\..\PluginArkazia2\Reference\Neuron.Modules.Commands.dll</HintPath>
+		</Reference>
+		<Reference Include="Neuron.Modules.Configs">
+			<HintPath>..\..\PluginArkazia2\Reference\Neuron.Modules.Configs.dll</HintPath>
+		</Reference>
+		<Reference Include="Neuron.Modules.Patcher">
+			<HintPath>..\..\PluginArkazia2\Reference\Neuron.Modules.Patcher.dll</HintPath>
+		</Reference>
+		<Reference Include="Ninject">
+			<HintPath>..\..\PluginArkazia2\Reference\Ninject.dll</HintPath>
+		</Reference>
+		<Reference Include="NorthwoodLib">
+			<HintPath>..\..\PluginArkazia2\Reference\NorthwoodLib.dll</HintPath>
+		</Reference>
+		<Reference Include="PluginAPI">
+			<HintPath>..\..\PluginArkazia2\Reference\PluginAPI.dll</HintPath>
+		</Reference>
+		<Reference Include="SYML">
+			<HintPath>..\..\PluginArkazia2\Reference\SYML.dll</HintPath>
+		</Reference>
+		<Reference Include="Synapse3.SynapseModule">
+			<HintPath>..\..\PluginArkazia2\Reference\Synapse3.SynapseModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine">
+			<HintPath>..\..\PluginArkazia2\Reference\UnityEngine.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>..\..\PluginArkazia2\Reference\UnityEngine.CoreModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.PhysicsModule">
+			<HintPath>..\..\PluginArkazia2\Reference\UnityEngine.PhysicsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="YamlDotNet">
+			<HintPath>..\..\PluginArkazia2\Reference\YamlDotNet.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+
+</Project>

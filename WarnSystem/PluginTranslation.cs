@@ -1,8 +1,10 @@
-using Synapse.Translation;
+using Neuron.Core.Meta;
+using Neuron.Modules.Configs.Localization;
 
 namespace WarnSystem
 {
-    public class PluginTranslation : IPluginTranslation
+    [Automatic]
+    public class PluginTranslation : Translations<PluginTranslation>
     {
         public string WarnSuccess { get; set; } = "You have warned %player% for %reason%"; 
 

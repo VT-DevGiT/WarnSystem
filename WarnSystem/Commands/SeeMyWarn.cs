@@ -1,43 +1,51 @@
-using Synapse.Api;
-using Synapse.Command;
+using Neuron.Core.Meta;
+using Neuron.Modules.Commands;
+using Neuron.Modules.Commands.Command;
+using Synapse3.SynapseModule.Command;
+using WarnSystemModule;
 
 namespace WarnSystem.Commands
 {
-    [CommandInformation(
-        Name = "seemywarn",
+    [Automatic]
+    [SynapseCommand(
+        CommandName = "seemywarn",
         Aliases = new[] {"seewarn", "mywarn"},
         Description = "see your own warn",
-        Platforms = new[] {Platform.ClientConsole},
-        Usage = "type seemywarn in the console"
+        Platforms = new[] { CommandPlatform.PlayerConsole }
     )]
-    public class SeeMyWarn : ISynapseCommand
+    public class SeeMyWarn : SynapseCommand
     {
-        public CommandResult Execute(CommandContext context)
-        {
-            var result = new CommandResult();
+        private readonly WarnSystemPlugin _plugin;
+        private readonly WarnService _warn;
 
-            if (Plugin.Config.PlayerCommand)
+        public SeeMyWarn(WarnSystemPlugin plugin, WarnService warn)
+        {
+            _plugin = plugin;
+            _warn = warn;
+        }
+
+        public override void Execute(SynapseContext context, ref CommandResult result)
+        {
+            if (_plugin.Config.PlayerCommand)
             {
-                Player player = context.Player;
-                if (Plugin.GetNumberOfWarns(player) == 0)
+                var player = context.Player;
+                if (_warn.GetNumberOfWarns(player) == 0)
                 {
-                    result.Message = Plugin.Translation.ActiveTranslation.NoWarn;
-                    result.State = CommandResultState.Error;
+                    result.Response = context.Player.GetTranslation(_plugin.Translation).NoWarn;
+                    result.StatusCode = CommandStatusCode.Error;
                 }
                 else
                 {
-                    string output = Plugin.SeeWarns(player);
-                    result.Message = output;
-                    result.State = CommandResultState.Ok;    
+                    string output = _warn.SeeWarns(player);
+                    result.Response = output;
+                    result.StatusCode = CommandStatusCode.Ok;
                 }
             }
             else
             {
-                result.Message = Plugin.Translation.ActiveTranslation.CommandDisable;
-                result.State = CommandResultState.Error;
+                result.Response = context.Player.GetTranslation(_plugin.Translation).CommandDisable;
+                result.StatusCode = CommandStatusCode.Error;
             }
-            
-            return result;
         }
     }
 }
