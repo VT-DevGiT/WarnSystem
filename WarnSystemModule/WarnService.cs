@@ -1,5 +1,6 @@
 ﻿using Neuron.Core.Meta;
 using PluginAPI.Core;
+using Synapse3.SynapseModule;
 using Synapse3.SynapseModule.Database;
 using Synapse3.SynapseModule.Player;
 using System;
@@ -26,7 +27,12 @@ namespace WarnSystemModule
             => player.GetData(WarnsDataKey) != null;
 
         public int GetNumberOfWarns(SynapsePlayer player)
-            => int.Parse(player.GetData(WarnsDataKey) ?? "0");
+        {
+            var value = player.GetData(WarnsDataKey);
+            if (string.IsNullOrEmpty(value))
+                return 0;
+            return int.Parse(value);
+        }
 
         public void SetNumberOfWarns(SynapsePlayer player, int value)
             => player.SetData(WarnsDataKey, value.ToString());

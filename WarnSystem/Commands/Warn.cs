@@ -36,10 +36,10 @@ namespace WarnSystem.Commands
         {
             //Test if there is enough args
             var count = context.Arguments.Count();
-            if (count >= 3 || (count >= 1 && context.Arguments[1] == "see"))
+            if (count >= 3 || (count >= 1 && context.Arguments[0] == "see"))
             {
                 //if warn see serverconsole
-                if (context.Platform == CommandPlatform.ServerConsole && context.Arguments[1] == "see" && count == 1)
+                if (context.Platform == CommandPlatform.ServerConsole && context.Arguments[0] == "see" && count == 1)
                 {
                     result.Response = context.Player.GetTranslation(_plugin.Translation).PlayerNotFound;
                     result.StatusCode = CommandStatusCode.Error;
@@ -48,10 +48,10 @@ namespace WarnSystem.Commands
                 //define parameter of the command
                 var cmdType = context.Arguments[1];
                 var arguments = "";
-                var player = count == 1 ? context.Player : _player.GetPlayer(context.Arguments[2]);
+                var player = count == 1 ? context.Player : _player.GetPlayer(context.Arguments[1]);
 
                 //gets all the final parameter
-                for (int i = 3; i < count; i++)
+                for (int i = 2; i < count; i++)
                     arguments += context.Arguments[i] + " ";
                 if (player is null)
                 {
