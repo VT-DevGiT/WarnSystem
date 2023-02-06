@@ -1,8 +1,12 @@
+using Neuron.Core.Dev;
 using Neuron.Core.Meta;
 using Neuron.Modules.Commands;
 using Neuron.Modules.Commands.Command;
+using PluginAPI.Core;
+using Synapse3.SynapseModule;
 using Synapse3.SynapseModule.Command;
 using Synapse3.SynapseModule.Player;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text.RegularExpressions;
 using WarnSystemModule;
@@ -36,101 +40,91 @@ namespace WarnSystem.Commands
         {
             //Test if there is enough args
             var count = context.Arguments.Count();
-            if (count >= 3 || (count >= 1 && context.Arguments[0] == "see"))
-            {
-                //if warn see serverconsole
-                if (context.Platform == CommandPlatform.ServerConsole && context.Arguments[0] == "see" && count == 1)
-                {
-                    result.Response = context.Player.GetTranslation(_plugin.Translation).PlayerNotFound;
-                    result.StatusCode = CommandStatusCode.Error;
-                    return;
-                }
-                //define parameter of the command
-                var cmdType = context.Arguments[1];
-                var arguments = "";
-                var player = count == 1 ? context.Player : _player.GetPlayer(context.Arguments[1]);
 
-                //gets all the final parameter
-                for (int i = 2; i < count; i++)
-                    arguments += context.Arguments[i] + " ";
-                if (player is null)
-                {
-                    result.Response = context.Player.GetTranslation(_plugin.Translation).PlayerNotFound;
-                    result.StatusCode = CommandStatusCode.Error;
-                }
-                else
-                {
-                    int numberOfWarn = _warn.GetNumberOfWarns(player);
-                    switch (cmdType)
-                    {
-                        case "add":
-                            if (context.Player.HasPermission("ws.add"))
-                            {
-                                var message = context.Player.GetTranslation(_plugin.Translation).WarnSuccess;
-                                message = Regex.Replace(message, "%reason%", arguments, RegexOptions.IgnoreCase);
-                                message = Regex.Replace(message, "%player%", player.NickName, RegexOptions.IgnoreCase);
-                                string bcMessage = Regex.Replace(context.Player.GetTranslation(_plugin.Translation).PlayerMessage, "%reason%", arguments, RegexOptions.IgnoreCase);
-                                player.SendBroadcast(bcMessage, 10);
-                                _warn.AddWarn(player, arguments);
-                                result.Response = message;
-                            }
-                            else
-                            {
-                                result.StatusCode = CommandStatusCode.Error;
-                                result.Response = context.Player.GetTranslation(_plugin.Translation).NoPermission;
-                            }
-                            break;
-                        case "remove" when numberOfWarn == 0:
-                        case "see" when numberOfWarn == 0:
-                            result.Response = context.Player.GetTranslation(_plugin.Translation).NoWarn;
-                            result.StatusCode = CommandStatusCode.Error;
-                            break;
-                        case "see":
-                            if (context.Player.HasPermission("ws.see"))
-                            {
-                                result.Response = _warn.SeeWarns(player);
-                            }
-                            else
-                            {
-                                result.StatusCode = CommandStatusCode.Error;
-                                result.Response = context.Player.GetTranslation(_plugin.Translation).NoPermission;
-                            }
-                            break;
-                        case "remove":
-                            if (context.Player.HasPermission("ws.remove"))
-                            {
-                                if (!int.TryParse(arguments, out int id))
-                                {
-                                    result.Response = context.Player.GetTranslation(_plugin.Translation).WarnNotFound;
-                                    result.StatusCode = CommandStatusCode.Error;
-                                }
-                                else if (_warn.RemoveWarn(player, id))
-                                {
-                                    result.Response = context.Player.GetTranslation(_plugin.Translation).Remove;
-                                }
-                                else
-                                {
-                                    result.Response = context.Player.GetTranslation(_plugin.Translation).WarnNotFound;
-                                    result.StatusCode = CommandStatusCode.Error;
-                                }
-                            }
-                            else
-                            {
-                                result.StatusCode = CommandStatusCode.Error;
-                                result.Response = context.Player.GetTranslation(_plugin.Translation).NoPermission;
-                            }
-                            break;
-                        default:
-                            result.StatusCode = CommandStatusCode.Error;
-                            result.Response = $"\n{context.Player.GetTranslation(_plugin.Translation).TypeError}";
-                            break;
-                    }
-                }
-            }
-            else
+            if (count < 2)
             {
                 result.Response = context.Player.GetTranslation(_plugin.Translation).ArgsError;
                 result.StatusCode = CommandStatusCode.Error;
+                return;
+            }
+
+            var playerArg = context.Arguments[1];
+            var player = playerArg.ToLower() == "me" ? context.Player : _player.GetPlayer(context.Arguments[1]);
+            if (player == null)
+            {
+                result.Response = context.Player.GetTranslation(_plugin.Translation).PlayerNotFound;
+                result.StatusCode = CommandStatusCode.Error;
+                return;
+            }
+            var cmdType = context.Arguments[0];
+            var arguments = "";
+            for (int i = 2; i < count; i++)
+                arguments += context.Arguments[i] + " ";
+            var numberOfWarn = _warn.GetNumberOfWarns(player);
+
+            switch (cmdType)
+            {
+                case "add":
+                    if (!context.Player.HasPermission("ws.add"))
+                    {
+                        result.StatusCode = CommandStatusCode.Error;
+                        result.Response = context.Player.GetTranslation(_plugin.Translation).NoPermission;
+                        return;
+                    }
+
+                    var message = context.Player.GetTranslation(_plugin.Translation).WarnSuccess;
+                    message = message.Format(arguments, player.NickName);
+                    var bcMessage = context.Player.GetTranslation(_plugin.Translation).PlayerMessage.Format(arguments);
+                    player.SendBroadcast(bcMessage, 10);
+                    _warn.AddWarn(player, arguments);
+                    result.Response = message;
+                    break;
+
+                case "remove" when numberOfWarn == 0:
+                case "see" when numberOfWarn == 0:
+                    result.Response = context.Player.GetTranslation(_plugin.Translation).NoWarn;
+                    result.StatusCode = CommandStatusCode.Error;
+                    break;
+
+                case "see":
+                    if (!context.Player.HasPermission("ws.see"))
+                    {
+                        result.StatusCode = CommandStatusCode.Error;
+                        result.Response = context.Player.GetTranslation(_plugin.Translation).NoPermission;
+                        return;
+                    }
+
+                    result.Response = _warn.SeeWarns(player);
+                    break;
+
+                case "remove":
+                    if (!context.Player.HasPermission("ws.remove"))
+                    {
+                        result.StatusCode = CommandStatusCode.Error;
+                        result.Response = context.Player.GetTranslation(_plugin.Translation).NoPermission;
+                        return;
+                    }
+
+                    if (!int.TryParse(arguments, out int id))
+                    {
+                        result.Response = context.Player.GetTranslation(_plugin.Translation).WarnNotFound;
+                        result.StatusCode = CommandStatusCode.Error;
+                    }
+                    else if (_warn.RemoveWarn(player, id))
+                    {
+                        result.Response = context.Player.GetTranslation(_plugin.Translation).Remove;
+                    }
+                    else
+                    {
+                        result.Response = context.Player.GetTranslation(_plugin.Translation).WarnNotFound;
+                        result.StatusCode = CommandStatusCode.Error;
+                    }
+                    break;
+
+                default:
+                    result.StatusCode = CommandStatusCode.Error;
+                    result.Response = $"\n{context.Player.GetTranslation(_plugin.Translation).TypeError}";
+                    break;
             }
         }
     }
