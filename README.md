@@ -4,7 +4,7 @@ WarnSystem is a plugin that let you put a warning on a player for a bad behavior
 ## Installation
 
 1. [Install Synapse](https://github.com/SynapseSL/Synapse/wiki#hosting-guides).
-2. Place the [dll](https://github.com/VT-DevGit/WarnSystem/releases/) file in your plugin directory.
+2. Place the [dll](https://github.com/VT-DevGit/WarnSystem/releases/) plugin in your plugin directory and module in the module directory.
 3. Restart/Start your server.
 
 ## Specification
